@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Page</title>
+    <style>
+        /* Modal styles */
+        .certificate-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow: auto;
+        }
+
+        .certificate-modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: var(--darker-bg);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .certificate-image {
+            width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(0, 116, 217, 0.1);
+            border-top: 8px solid #0074D9;
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            box-shadow: 0 0 20px rgba(0, 116, 217, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        .loading-name {
+            color: #0074D9;
+            font-size: 24px;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: spellOut 2s ease-in-out forwards;
+            z-index: 2;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes spellOut {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        :root {
+            --dark-bg: #0f0f0f;
+            --darker-bg: #080808;
+            --accent: #2563eb;
+            --accent-light: #3b82f6;
+            --text: #f0f0f0;
+            --text-dim: #aaaaaa;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            --border: 1px solid #333;
+            --gradient: linear-gradient(135deg, var(--accent), var(--accent-light));
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding-top: 80px; /* Add padding for fixed nav */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--darker-bg);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--box-shadow);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            color: #0074D9;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--darker-bg);
+                flex-direction: column;
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 0.5rem 0;
+            }
+        }
+
+        .school-box {
+            background: var(--darker-bg);
+            border: var(--border);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        .school-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .school-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .school-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            border: 3px solid var(--accent);
+        }
+
+        .school-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .school-name {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .school-name:hover {
+            color: var(--accent-light);
+        }
+
+        .school-details {
+            color: var(--text-dim);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-top: 16px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .school-details p {
+            margin: 12px 0;
+            padding: 0 12px;
+        }
+        
+        .school-details {
+            color: var(--text-color);
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .school-details p {
+            margin: 5px 0;
+        }
+
+        .view-certificate {
+            background-color: #4a90e2;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 12px;
+            display: inline-block;
+            transition: background-color 0.2s ease;
+        }
+
+        .view-certificate:hover {
+            background-color: #357abd;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            margin-top: 20px;
+        }
+        
+        .education-link {
+            color: inherit;
+            text-decoration: none;
+        }
+        .education-link:hover {
+            color: #0000ff;
+            transition: color 0.3s ease;
+        }
+        .education-link:active {
+            color: #0000cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <div class="home-button">
+                <a href="https://rakibulinfo.github.io/" class="education-link" target="_self">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        .home-button {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .home-button a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .home-button a:hover {
+            color: var(--accent);
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+    </style>
+
+    <script>
+        // Add event listener to home button
+        document.querySelector('.home-button a').addEventListener('click', function(e) {
+            // Prevent default behavior for external links
+            if (this.getAttribute('target') !== '_self') {
+                e.preventDefault();
+                window.location.href = this.getAttribute('href');
+            }
+        });
+    </script>
+    
+    <style>
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        .logo-text {
+            font-weight: bold;
+            color: #0074D9;
+        }
+    </style>
+
+    <div class="container">
+        <h1 class="animate">Education Journey</h1>
+
+    <div class="container">
+        <div class="school-grid">
+            <!-- School Box 1 -->
+            <div class="school-box" data-box-number="1">
+                <div class="school-logo">
+                    <!-- Add your school logo here -->
+                    <img src="../assets/logo1.png" alt="Northern University Bangladesh Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <a href="https://nub.ac.bd/" class="school-name">Northern University Bangladesh (NUB)</a>
+                <div class="school-details">
+                    <p>Location: 111/2 Kawla Jamea Mosjid Road, Dakshin Khan (near international airport), Ashiyan City Rd, Dhaka 1230</p>
+                    <p><strong>Admission Date: 02 Mar' 2023</strong></p>
+                    <p><strong>Degree: B.Sc. (in Electrical And Electronic Engineering)</strong></p>
+                    <p><strong>Thesis Advisor: *********</strong></p>
+                    <p><strong>Duration: 2023 - Still Now</strong></p>
+                    <p><strong>CGPA: unknown</strong></p>
+                </div>
+                <a href="#" class="view-certificate">View Certificate</a>
+            </div>
+
+            <!-- School Box 2 -->
+            <div class="school-box">
+                <div class="school-logo">
+                    <!-- Add your school logo here -->
+                    <img src="../assets/logo2.png" alt="Moulvibazar Polytechnic Institute Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <a href="https://mpi.moulvibazar.gov.bd/" class="school-name">Moulvibazar Polytechnic Institute (MPI)</a>
+                <div class="school-details">
+                    <p>Address: FRJ7+FJM, Shamsher Nagar Road, Matarkapon, Moulvibazar</p>
+                    <p><strong>Admission Date: 31 July' 2017</strong></p>
+                    <p><strong>Diploma in Electronic Technology</strong></p>
+                    <p><strong>Thesis Advisor: Monju Miah</strong></p>
+                    <p><strong>End Of The Admission: 27 October' 2021</strong></p>
+                    <p><strong>CGPA: 86.2%</strong></p>
+                </div>
+                <a href="#" class="view-certificate" onclick="openCertificateModal()">View Certificate</a>
+            </div>
+
+
+
+            <!-- School Box 3 -->
+            <div class="school-box" data-box-number="3">
+                <div class="school-logo">
+                    <!-- Add your school logo here -->
+                    <img src="../assets/logo3.png" alt="Salanga Islamia Multilateral High School Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <a href="https://www.sohopathi.com/salanga-islamia-high-school/" class="school-name">Salanga Islamia Multilateral High School</a>
+                <div class="school-details">
+                    <p>Location: Salanga Bazar, Roygonj, Sirajgonj</p>
+                    <p><strong>Admission Date: 01 Jan' 2015</strong></p>
+                    <p><strong>Trade: Building Maintenance -64</strong></p>
+                    <p><strong>End Of The Admission: 01 April' 2017</strong></p>
+                    <p><strong>CGPA: 92.5%</strong></p>
+                </div>
+                <a href="#" class="view-certificate" onclick="openSSCCertificateModal()">View Certificate</a>
+            </div>
+
+            <!-- School Box 4 -->
+            <div class="school-box" data-box-number="4">
+                <div class="school-logo">
+                    <!-- Add your school logo here -->
+                    <img src="../assets/logo4.png" alt="Ghurka Adarsha ML High School Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <a href="https://www.sohopathi.com/ghurka-adarsha-high-school/" class="school-name">Ghurka Adarsha ML High School</a>
+                <div class="school-details">
+                    <p>Location: Ghurka, Roygonj, Sirajgonj</p>
+                    <p><strong>Admission Date: 01 Jan' 2012</strong></p>
+                    <p><strong>Study for knowledge</strong></p>
+                    <p><strong>End Of The Admission: 31 Dec' 2014</strong></p>
+                    <p><strong>CGPA: 67.5%</strong></p>
+                </div>
+                <a href="#" class="view-certificate" onclick="openJSCCertificateModal()">View Certificate</a>
+            </div>
+
+            <!-- School Box 5 -->
+            <div class="school-box" data-box-number="5">
+                <div class="school-logo">
+                    <!-- Add your school logo here -->
+                    <img src="../assets/logo5.png" alt="Dadpur Govt Primary School Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <a href="https://school5.com" class="school-name">Dadpur Govt Primary School</a>
+                <div class="school-details">
+                    <p>Location: Dadpur, Sahebgonj, Roygonj, Sirajgonj</p>
+                    <p><strong>Admission Date: Unknown</strong></p>
+                    <p><strong>Study for Basic knowledge</strong></p>
+                    <p><strong>End Of The Admission: 15 Dec' 2011</strong></p>
+                    <p><strong>CGPA: 50.6%</strong></p>
+                </div>
+                <a href="#" class="view-certificate" onclick="openPSCCertificateModal()">View Certificate</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 MD Rakibul Islam. All rights reserved.</p>
+    </footer>
+
+    <!-- Diploma Certificate Modal -->
+    <div id="certificateModal" class="certificate-modal">
+        <div class="certificate-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 20px;">My Diploma Certificate</h2>
+            <img src="../assets/diploma.jpg" alt="Diploma Certificate" class="certificate-image">
+        </div>
+    </div>
+
+    <!-- SSC Certificate Modal -->
+    <div id="sscCertificateModal" class="certificate-modal">
+        <div class="certificate-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 20px;">My Secondary School Certificate</h2>
+            <img src="../assets/ssc.jpg" alt="SSC Certificate" class="certificate-image">
+        </div>
+    </div>
+
+    <!-- JSC Certificate Modal -->
+    <div id="jscCertificateModal" class="certificate-modal">
+        <div class="certificate-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 20px;">My Junior School Certificate</h2>
+            <img src="../assets/jsc.jpg" alt="JSC Certificate" class="certificate-image">
+        </div>
+    </div>
+
+    <!-- BSC Certificate Modal -->
+    <div id="bscCertificateModal" class="certificate-modal">
+        <div class="certificate-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 20px;">My BSC Certificate</h2>
+            <img src="../assets/bsc.jpg" alt="BSC Certificate" class="certificate-image">
+        </div>
+    </div>
+
+    <!-- PSC Certificate Modal -->
+    <div id="pscCertificateModal" class="certificate-modal">
+        <div class="certificate-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 20px;">My Primary School Certificate</h2>
+            <img src="../assets/psc.jpg" alt="PSC Certificate" class="certificate-image">
+        </div>
+    </div>
+
+    <script>
+        // Remove loading overlay after 2 seconds
+        setTimeout(() => {
+            document.getElementById('loadingOverlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }, 500);
+        }, 2000);
+
+        // Get modal and close button elements
+        const modal = document.getElementById('certificateModal');
+        const closeBtn = document.querySelector('.close-modal');
+
+        // When the user clicks the close button
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        // Function to open the diploma modal
+        function openCertificateModal() {
+            modal.style.display = 'block';
+        }
+
+        // Function to open the SSC modal
+        function openSSCCertificateModal() {
+            const sscModal = document.getElementById('sscCertificateModal');
+            sscModal.style.display = 'block';
+        }
+
+        // Function to open the BSC modal
+        function openBSCCertificateModal() {
+            const bscModal = document.getElementById('bscCertificateModal');
+            bscModal.style.display = 'block';
+        }
+
+
+        // Function to open the JSC modal
+        function openJSCCertificateModal() {
+            const jscModal = document.getElementById('jscCertificateModal');
+            jscModal.style.display = 'block';
+        }
+
+        // Function to open the PSC modal
+        function openPSCCertificateModal() {
+            const pscModal = document.getElementById('pscCertificateModal');
+            pscModal.style.display = 'block';
+        }
+
+        // Handle click events for all certificate buttons
+        const viewCertificates = document.querySelectorAll('.view-certificate');
+        viewCertificates.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const boxNumber = this.closest('.school-box').dataset.boxNumber;
+                switch(boxNumber) {
+                    case '1':
+                        openBSCCertificateModal();
+                        break;
+                    case '2':
+                        openCertificateModal();
+                        break;
+                    case '3':
+                        openSSCCertificateModal();
+                        break;
+                    case '4':
+                        openJSCCertificateModal();
+                        break;
+                    case '5':
+                        openPSCCertificateModal();
+                        break;
+                }
+            });
+        });
+
+        // Close all modals when clicking the close button
+        const closeBtns = document.querySelectorAll('.close-modal');
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const modal = this.closest('.certificate-modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Close both modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.certificate-modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Close both modals when pressing escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = document.querySelectorAll('.certificate-modal');
+                modals.forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

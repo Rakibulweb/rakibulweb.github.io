@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You | MD Rakibul Islam</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .thank-you-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 100px 20px;
+        }
+        
+        .checkmark {
+            color: var(--accent);
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: bounce 1s ease infinite alternate;
+        }
+        
+        .return-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, var(--accent), var(--accent-light));
+            color: rgb(0, 0, 0);
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        @keyframes bounce {
+            to { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">MD RAKIBUL ISLAM</div>
+        </div>
+    </nav>
+
+    <section>
+        <div class="container thank-you-container">
+            <div class="checkmark">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Thank You!</h1>
+            <p>Your message has been successfully sent.</p>
+            <p>I'll get back to you as soon as possible.</p>
+            <a href="index.html" class="return-btn">
+                <i class="fas fa-arrow-left"></i> Back to Portfolio
+            </a>
+            <p class="redirect-message" style="margin-top: 2rem; color: var(--text-dim);">
+                You'll be automatically redirected in <span id="countdown">5</span> seconds...
+            </p>
+        </div>
+    </section>
+
+    <script>
+        let seconds = 5;
+        const countdownEl = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            seconds--;
+            countdownEl.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(timer);
+                window.location.href = "https://rakibulinfo.github.io/";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

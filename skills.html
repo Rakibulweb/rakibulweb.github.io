@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills & Expertise - Professional IT & Electronics Services</title>
+    <style>
+        :root {
+            --primary-color: #64b5f6;
+            --secondary-color: #2196f3;
+            --dark-bg: #1a1a1a;
+            --darker-bg: #121212;
+            --text-color: #ffffff;
+            --accent-color: #4CAF50;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Navigation styles */
+        .navbar {
+            background-color: var(--darker-bg);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--box-shadow);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgb(7, 101, 195);
+            border-top: 8px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            box-shadow: 0 0 20px rgb(255, 255, 255);
+            position: relative;
+            z-index: 1;
+        }
+        .loading-name {
+            color: #0074D9;
+            font-size: 24px;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: spellOut 2s ease-in-out forwards;
+            z-index: 2;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes spellOut {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            25% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            75% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .loading-name {
+            color: var(--primary-color);
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem;
+        }
+
+        .section {
+            background-color: var(--darker-bg);
+            border-radius: 25px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(50px) rotateX(20deg);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(33, 150, 243, 0.1), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+
+        .section.visible::before {
+            left: 100%;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text; 
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.8rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        h2::after, h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .intro {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .skill-box {
+            background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+            padding: 2.5rem;
+            border-radius: 18px;
+            margin-bottom: 2.5rem;
+            border: 2px solid transparent;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(33, 150, 243, 0.2), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .skill-box:hover {
+            transform: translateX(20px) scale(1.04);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary-color);
+        }
+
+        .skill-box:hover::before {
+            left: 100%;
+        }
+
+        .skill-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .skill-list li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .skill-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        .tools-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .tool-card {
+            background-color: var(--dark-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(33, 150, 243, 0.15), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px) scale(1.04);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
+            border-color: var(--primary-color);
+        }
+
+        .tool-card:hover::before {
+            left: 100%;
+        }
+
+        .tool-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text; 
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.5rem 3rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            margin: 2.5rem auto;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.5);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-text {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .section {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tools-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .skill-box {
+                padding: 2rem;
+            }
+
+            .cta-button {
+                padding: 1.2rem 2.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <div class="container">
+        <h1>My Skills</h1>
+        <p class="intro">I am an experienced professional specializing in a wide range of IT and electronics/electrical projects. Over the years, I have built a solid reputation for delivering high-quality services and solutions that meet the needs of both individual clients and businesses.</p>
+
+        <section class="section">
+            <h2>Hardware Troubleshooting & Repair</h2>
+            <div class="skill-box">
+                <ul class="skill-list">
+                    <li>Desktop and Laptop Repair: Diagnose and repair hardware and software issues</li>
+                    <li>Power Supply Systems: Troubleshooting and repairing power supply units and UPS systems</li>
+                    <li>Printer & Photocopier Troubleshooting: Repair and maintain office equipment</li>
+                    <li>Performance Optimization: Regular maintenance for smooth operation</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Electronics & Electrical Projects</h2>
+            <div class="skill-box">
+                <ul class="skill-list">
+                    <li>Project Design & Implementation: Custom solutions for client needs</li>
+                    <li>Custom Solutions: Modify existing systems to meet specific requirements</li>
+                    <li>Automation & Control Systems: Design and implement automated solutions</li>
+                    <li>Power Supply Design: Efficient and reliable power solutions</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Networking & Server Setup</h2>
+            <div class="skill-box">
+                <ul class="skill-list">
+                    <li>Networking: Set up wired and wireless networks</li>
+                    <li>Server Installation: Configure and maintain business servers</li>
+                    <li>Network Security: Implement secure network solutions</li>
+                    <li>Cloud Integration: Connect to cloud services</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Tools & Equipment</h2>
+            <div class="tools-section">
+                <div class="tool-card">
+                    <h3>Hardware Tools</h3>
+                    <ul class="skill-list">
+                        <li>Soldering Iron (Temperature-Controlled)</li>
+                        <li>Digital Multimeter (Fluke 117)</li>
+                        <li>Logic Analyzer (Saleae Logic Pro 16)</li>
+                        <li>Function Generator (Rigol DG1022)</li>
+                        <li>Signal Generator (Tektronix AFG3102)</li>
+                        <li>Power Supply Units (Mean Well RSP-350-24)</li>
+                        <li>PCB Assembly Tools (Tweezers, Solder Paste, Stencil)</li>
+                        <li>Waveform Generator (Tektronix AFG3252)</li>
+                        <li>Network Tester (Fluke Networks CableIQ)</li>
+                        <li>Thermal Imaging Camera (FLIR C2)</li>
+                        <li>Test Probes (Pomona 5205)</li>
+                        <li>Microscope (Digital 100x)</li>
+                        <li>ESD Protection Equipment</li>
+                        <li>Component Tester (LCR Meter)</li>
+                        <li>Frequency Counter</li>
+                        <li>USB Tester</li>
+                    </ul>
+                </div>
+
+                <div class="tool-card">
+                    <h3>Software Tools</h3>
+                    <ul class="skill-list">
+                        <li>PCB Design Software (KiCad, Eagle, Altium Designer)</li>
+                        <li>Diagnostic Tools (MemTest86, CrystalDiskInfo, Speccy)</li>
+                        <li>Network Monitoring Tools (Wireshark, PRTG Network Monitor)</li>
+                        <li>Virtualization Software (VMware Workstation, VirtualBox)</li>
+                        <li>System Optimization Tools (CCleaner, Defraggler)</li>
+                        <li>Backup Software (Acronis True Image, EaseUS Todo Backup)</li>
+                        <li>Antivirus Software (Bitdefender, Malwarebytes)</li>
+                        <li>Performance Monitoring Tools (Process Explorer, Resource Monitor)</li>
+                        <li>Remote Desktop Software (TeamViewer, AnyDesk)</li>
+                        <li>Cloud Storage Tools (Google Drive, Dropbox, OneDrive)</li>
+                        <li>File Recovery Software (Recuva, EaseUS Data Recovery)</li>
+                        <li>System Imaging Tools (Macrium Reflect, Clonezilla)</li>
+                        <li>Network Security Tools (Nmap, Nessus)</li>
+                        <li>Database Management (MySQL Workbench, SQL Server Management Studio)</li>
+                        <li>Development Tools (Visual Studio Code, PyCharm)</li>
+                        <li>Automation Tools (AutoHotkey, PowerShell)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Why Choose Me?</h2>
+            <div class="skill-box">
+                <ul class="skill-list">
+                    <li><span class="highlight">Extensive Experience</span> - Years of practical experience in hardware and software solutions.</li>
+                    <li><span class="highlight">Problem Solver</span> - Quick identification and resolution of technical issues.</li>
+                    <li><span class="highlight">Customer-Focused</span> - Tailored solutions to meet unique needs.</li>
+                    <li><span class="highlight">Continuous Learning</span> - Keeping up with latest technologies to provide modern and efficient solutions.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="cta-button">
+            Need help with electronics Devices & computer Printer & Photocopier repair? Contact Me!
+        </div>
+    </div>
+
+    <script>
+        // Handle loading animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            // Show loading overlay initially
+            loadingOverlay.style.display = 'flex';
+            
+            // Hide loading overlay after 2 seconds
+            setTimeout(() => {
+                loadingOverlay.style.opacity = '0';
+                loadingOverlay.style.pointerEvents = 'none';
+                
+                // Remove overlay after transition
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 500); // Match with CSS transition duration
+            }, 2000); // 2 seconds delay
+
+            // Add smooth fade-out transition
+            loadingOverlay.style.transition = 'opacity 0.5s ease-in-out';
+
+            // Start intersection observer after loading animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        // Add delay for skill list animations
+                        setTimeout(() => {
+                            entry.target.querySelectorAll('.skill-box').forEach(box => {
+                                box.classList.add('visible');
+                            });
+                        }, 300);
+                        
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px'
+            });
+
+            // Observe all sections
+            document.querySelectorAll('.section').forEach(section => {
+                observer.observe(section);
+            });
+
+            // Add initial visibility for first section
+            document.querySelector('.section').classList.add('visible');
+            document.querySelector('.section').querySelectorAll('.skill-box').forEach(box => {
+                box.classList.add('visible');
+            });
+        });
+    </script>
+</body>
+</html>
